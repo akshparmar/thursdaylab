@@ -1,0 +1,241 @@
+Q1:
+-------
+
+public class Main_Class { 
+	
+	// main method
+	public static void main(String[] args)
+	{
+		Thread_Infinity ob = new Thread_Infinity("ACTIVE"); // passing the argument to the constructor
+		Thread_Infinity ob1 = new Thread_Infinity("UNACTIVE"); // passing the argument to the constructor
+		System.out.println("Display Output Here..");
+		ob.start(); // calling the run method
+		ob1.start(); // calling the run method
+	}
+}
+------
+public class Thread_Infinity extends Thread
+{
+	String str; // global variable
+	Thread_Infinity(String s) // constructor taking a parameter
+	{
+		str = s;
+	}
+	
+	public void run() // run method calling by the another class
+	{
+		
+		for (;;) // infinity loop
+		{
+			    System.out.println((Thread.currentThread()).getName()+" "+"Message: "+str); // printing the message
+	            System.out.println((Thread.currentThread()).getName()+" "+"Priority:  "+(Thread.currentThread()).getPriority()); // printing the priority here
+	             
+	            try
+	            {
+	                Thread.sleep(1000); // sleeping the thread for 1 sec
+	            }
+	            catch(Exception e)
+	            { 
+	                System.out.println(e);
+	            }
+	    }
+	}
+	
+	
+}
+------------------------
+Q2:
+
+class Main_Class // main class
+{
+	public static void main(String[] args) // main method
+	{
+		Problem_Class pc = new Problem_Class(); // creating object of Problem class
+		Producer_Class p1 = new Producer_Class(pc, 1); // creating object of Producer_class and passing the arguments to the constructor
+		Consumer_Class c1 = new Consumer_Class(pc, 2);  // creating object of Consumer_class and passing the arguments to the constructor
+	      c1.start(); // calling a run method
+	      p1.start(); // calling a run method
+	}
+}
+-------------
+public class Consumer_Class  extends Thread {
+	
+	Problem_Class Shop;	//declared variable for using the class name.........
+	      int num,value = 0,i;  //declared varaible and data type......
+	     
+	      //create construtor.............
+	      public Consumer2(Problem_Class c, int number)
+	      {
+	            Shop = c;
+	            this.num = number;//use this keyword for use the same class variable...........
+	      }
+	      public void run()//create run method......
+	      {
+	            for ( i = 0; i < 10; i++)//using the for loop
+	            {
+	                  System.out.println("Consumed value " + this.num+ " got: " + value);//for print
+	            }
+	      }
+
+}
+---------------
+public class Problem_Class  {  // this is problem class that carry problem according to the ques
+
+   int materials;  // global variables here
+    boolean available = false;
+    public synchronized int get() // synchronized method to get a true or false
+    {
+          while (available == false) // while loop for false condition
+          {
+                try
+                {
+                      wait(); // if false then problem will be wait
+                }
+                catch (InterruptedException ie) // catching the exception
+                {
+                }
+          }
+          available = false; // material not available
+          notifyAll();
+          return materials; //return a material to the method
+    }
+    public synchronized void put(int value) // synchronized method for true conditions
+    {
+          while (available == true) // while loop for true condition
+          {
+                try
+                {
+                      wait(); // wait the program
+                }
+                catch (InterruptedException ie) // catching the Interrupted Exception here
+                {
+                      ie.printStackTrace();
+                }
+          }
+          materials = value; // material available in a value
+          available = true; // material available here
+          notifyAll();
+    }
+
+
+}
+-------------
+public class Producer_Class extends Thread {
+	         	      //use the thread class property.......
+	Problem_Class  Shop;  //declared variable for using the class name.........
+      	int number;           //declared varaible and data type......
+	
+     public Producer_Class(Problem_Class c, int number) //create construtor and taking a paramether
+     {
+           Shop = c;
+           this.number = number;	//use this keyword for use the same class variable
+     }
+     public void run()			//create run method.....
+     {
+           for (int i = 0; i < 10; i++)  //using  for loop....
+           {
+                 
+                 System.out.println("Produced value " + this.number+ " put: " + i);
+                 try						//use try block where exception show........
+                 {
+                	
+                       sleep((int)(Math.random() * 100));	//sleep method of thread
+                 }
+                 catch (InterruptedException ie)		//catch block to handle the exception.....
+                 {
+                     System.out.println(ie);			//simply print the exception.......
+                 }
+           }
+     }
+
+}
+------------------------------
+Q3:
+
+public class Main_Class {
+
+	// main method that create the object or another classes and calls the method
+	public static void main(String[] args) {
+		FIbonacci_Series ob = new FIbonacci_Series(); // FIbonacci_Series object creation
+		Reverse_No ob1 = new Reverse_No(); // Reverse_no class object creation
+		ob.start(); // calls run method
+		ob1.start(); // calls run method
+
+	}
+
+}
+-------------
+import java.util.Scanner;
+
+public class FIbonacci_Series extends Thread{
+	//global variable declaration  
+	Scanner sc = new Scanner(System.in);
+    int n1, n2,n3,i,j ,temp=0;
+	int[] arr = new int[10];
+	public void run()
+	{
+        
+        // taking the two values from user
+        System.out.print("Please enter the two value for Fibonacci Series : ");
+        n1 = sc.nextInt();
+        n2 = sc.nextInt();
+        System.out.println(" Your starting value is : "+n1+"   Your Ending value is : "+n2);  // starting value or last value
+               
+        
+        for(int i=2 ; i<10; ++i) // loop run for 10 times only
+        {
+            // adding the stating value and last value
+            n3 = n1+n2;
+            try {
+            	sleep(1000); // sleeping the thread for 1 sec
+            }catch(Exception e) {
+            	System.out.println(e);
+            }
+            System.out.print(" "+n3);
+            // interchange value
+            n1 = n2;
+            n2 = n3;
+        }
+	}
+
+}
+---------
+public class Reverse_No  extends FIbonacci_Series{
+	
+	// run method
+	public void run() { 
+		try{
+			sleep(10000); // sleeping run method for 10 sec
+		}catch(Exception e)
+		{
+			System.out.println(e);
+		}
+			
+		System.out.print("Enter the 10 Values here : "); // taking a 10 values from user
+		for(i=0; i<arr.length; i++)
+		{
+			arr[i] = sc.nextInt(); // taking value from user in to loop form
+		}
+		 for(i=0; i<arr.length; i++) // checking the value 
+	        {
+	            for(j=i+1; j<arr.length; j++) // which value is greater than 
+	            {
+	                if(arr[i]<arr[j]) // checking greater value here
+	                {
+	                   temp = arr[i]; // interchange the value
+	                   arr[i] = arr[j];
+	                   arr[j] = temp; 
+	                }
+	            }
+	        }
+	        
+	        // breaking the line
+	        System.out.println();
+	        for (int i = 0; i < arr.length; i++) // printing the values from decrement order 
+	         {   
+	        	 System.out.print(arr[i] + " ");
+	        		                
+	         }  
+	}
+
+}
